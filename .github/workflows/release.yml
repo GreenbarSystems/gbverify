@@ -1,17 +1,19 @@
-name: Release
+﻿name: Release
 
 # Triggers on annotated tags matching v*.*.* — publishes both packages
 # to npm and PyPI using OIDC trusted publishing (no long-lived secrets).
 #
 # Setup steps required ONCE per registry (see docs/RELEASING.md):
-#   1. On npmjs.com: create the @greenbarsystems org, then under
-#      Settings → Trusted publishing, add a rule pointing at:
-#         repository:          GreenbarSystems/gbverify
-#         workflow filename:   .github/workflows/release.yml
+#   1. On npmjs.com: the @greenbarsystemsllc org owns the scope. Under
+#      the package's Settings → Trusted publishing, add a rule pointing at:
+#         organization:        GreenbarSystems
+#         repository:          gbverify
+#         workflow filename:   release.yml
 #         environment name:    (leave blank)
-#   2. On pypi.org: create the gbverify project (initial upload can be
-#      done manually the first time, OR use pending trusted publisher),
-#      then under Manage → Publishing, add a rule pointing at:
+#         allowed actions:     npm publish
+#   2. On pypi.org: gbverify project (initial upload via pending trusted
+#      publisher OR one manual upload), then under Manage → Publishing,
+#      add a rule pointing at:
 #         Owner:               GreenbarSystems
 #         Repository name:     gbverify
 #         Workflow name:       release.yml
@@ -35,10 +37,10 @@ jobs:
     # Never publish a version whose test suite doesn't pass.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -48,31 +50,23 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      # Required for npm provenance (attests that this specific tarball
-      # was built from this specific commit in this specific workflow —
-      # visible on npmjs.com next to the version).
+      # Required for npm provenance and Trusted Publishing OIDC exchange.
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           registry-url: "https://registry.npmjs.org"
-      - name: Publish @greenbarsystems/gbverify
+      - name: Publish @greenbarsystemsllc/gbverify
         # `npm publish` inside cli-node/ runs the `prepack` script which
         # copies README + LICENSE into the tarball. --provenance emits
-        # the OIDC-signed attestation.
+        # the OIDC-signed attestation visible on npmjs.com. No NPM_TOKEN
+        # is used — Trusted Publishing authenticates via the workflow's
+        # OIDC identity.
         working-directory: cli-node
         run: npm publish --provenance --access public
-        env:
-          # Trusted publishing means no NPM_TOKEN is needed — the workflow's
-          # OIDC identity is what npm authenticates against. This line is
-          # kept commented as documentation of what the OLD flow looked
-          # like, for anyone reading the workflow later.
-          #
-          # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: "true"
 
   publish-pypi:
     needs: test
@@ -82,7 +76,7 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -106,7 +100,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - name: Compute sample-packet manifest hash for the release notes
         id: hash
         run: |
