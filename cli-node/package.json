@@ -7,16 +7,30 @@
   "homepage": "https://github.com/GreenbarSystems/gbverify#readme",
   "bugs": "https://github.com/GreenbarSystems/gbverify/issues",
   "bin": {
-    "gbverify": "./bin/gbverify.js"
+    "gbverify": "bin/gbverify.js"
   },
-  "files": ["bin", "README.md", "LICENSE"],
-  "engines": { "node": ">=18" },
+  "files": [
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GreenbarSystems/gbverify.git",
     "directory": "cli-node"
   },
-  "keywords": ["greenbar", "audit", "sha256", "evidence", "ap-automation", "verify", "cryptographic-hash"],
+  "keywords": [
+    "greenbar",
+    "audit",
+    "sha256",
+    "evidence",
+    "ap-automation",
+    "verify",
+    "cryptographic-hash"
+  ],
   "scripts": {
     "prepack": "node -e \"require('fs').copyFileSync('../README.md','README.md'); require('fs').copyFileSync('../LICENSE','LICENSE')\""
   },
