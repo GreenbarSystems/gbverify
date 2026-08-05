@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""gbverify — verify the integrity of a Greenbar Pay evidence packet.
+"""gbverify — verify the integrity of a Greenbar AP Assurance evidence packet.
 
 MIT License. Standard library only (Python 3.8+).
 
@@ -25,7 +25,7 @@ import os
 import sys
 from typing import Any, Optional
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 SUPPORTED_SCHEMAS = {"evidence.v2"}
 
 
@@ -34,7 +34,7 @@ SUPPORTED_SCHEMAS = {"evidence.v2"}
 #
 # Must produce byte-for-byte identical output to
 # src/lib/evidence/assemble.ts#canonicalJsonStringify in the
-# greenbarsystems/Greenbar-Pay repository:
+# GreenbarSystems/Greenbar-Pay repository:
 #   - object keys sorted (recursively)
 #   - array element order preserved
 #   - JSON.stringify default separators: ",", ":" (i.e. no spaces

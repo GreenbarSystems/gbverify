@@ -1,4 +1,4 @@
-// Build a realistic Greenbar Pay evidence packet that matches the
+// Build a realistic Greenbar AP Assurance evidence packet that matches the
 // schemaVersion "evidence.v2" contract from src/lib/evidence/assemble.ts.
 // Uses the exact canonicalJsonStringify contract so the emitted
 // manifestHash is byte-for-byte reproducible by any verifier.
@@ -271,7 +271,12 @@ const manifestHash = canonicalSha256(manifest);
 // Envelope written to disk. This is what gets shared with an auditor.
 const packet = {
   gbEvidencePacket: {
-    packetId: randomUUID(),
+    // Pinned so the sample packet.json is deterministic. The packetId
+    // is envelope metadata (not part of the hashed manifest), so pinning
+    // it keeps `git diff` clean across rebuilds without affecting any
+    // cryptographic property. Rotate this UUID only when the sample is
+    // meant to represent a new logical invoice.
+    packetId: "1be7f225-cb05-4cf6-9c5b-d4a9efa7d0a3",
     schemaVersion: manifest.schemaVersion,
     sealedAt: "2026-07-16T15:08:53.000Z",
     sealedByUserId: "6e9c7b21-0f14-4a3f-8e2b-7d8c9a1b2c3d",

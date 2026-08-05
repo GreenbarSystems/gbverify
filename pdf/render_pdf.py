@@ -1,4 +1,4 @@
-"""Render a Greenbar Pay evidence packet as a hashed PDF.
+"""Render a Greenbar AP Assurance evidence packet as a hashed PDF.
 
 The rendered PDF is the auditor-facing artifact. Design principles:
 
@@ -214,7 +214,7 @@ def _cover(story, styles, packet):
 
     story.append(Paragraph(
         "The verifier is MIT-licensed. Read the source at "
-        '<font color="#0F6B3A"><u>github.com/greenbarsystems/gbverify</u></font> '
+        '<font color="#0F6B3A"><u>github.com/GreenbarSystems/gbverify</u></font> '
         "before running it. The canonical-JSON hashing algorithm is documented "
         "on the last page of this packet.",
         styles["GBSmall"]))
@@ -347,7 +347,7 @@ def _risk_page(story, styles, packet):
     story.append(Paragraph(
         "The score is deterministic — the same inputs always produce the same "
         "score, on the versioned weight table in "
-        "<u>github.com/greenbarsystems/Greenbar-Pay src/lib/briefing/risk-score.ts</u>. "
+        "<u>github.com/GreenbarSystems/Greenbar-Pay src/lib/briefing/risk-score.ts</u>. "
         "The justification prose below is written by an LLM; the score is not.",
         styles["GBSmall"]))
     story.append(Spacer(1, 8))
@@ -467,7 +467,7 @@ def _verify_page(story, styles, packet):
     story.append(Paragraph(
         "The verifier is a small, MIT-licensed, dependency-free tool. Source "
         "and binaries live at "
-        "<u>github.com/greenbarsystems/gbverify</u>. Install via <font face='Courier' size='9'>brew "
+        "<u>github.com/GreenbarSystems/gbverify</u>. Install via <font face='Courier' size='9'>brew "
         "install gbverify</font>, "
         "<font face='Courier' size='9'>npx @greenbarsystems/gbverify</font>, or "
         "<font face='Courier' size='9'>pipx install gbverify</font>.",

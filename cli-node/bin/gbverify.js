@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// gbverify — verify the integrity of a Greenbar Pay evidence packet.
+// gbverify — verify the integrity of a Greenbar AP Assurance evidence packet.
 // MIT License. Zero runtime dependencies.
 //
 // Usage:
@@ -21,13 +21,13 @@ const { createHash } = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 const SUPPORTED_SCHEMAS = new Set(["evidence.v2"]);
 
 function usage() {
   process.stderr.write(
     [
-      "gbverify " + VERSION + " — Greenbar Pay evidence packet verifier",
+      "gbverify " + VERSION + " — Greenbar AP Assurance evidence packet verifier",
       "",
       "Usage:",
       "  gbverify <packet.json>              Verify a packet file",
@@ -47,7 +47,7 @@ function usage() {
 //
 // This function MUST stay byte-for-byte identical to
 // src/lib/evidence/assemble.ts#canonicalJsonStringify in the
-// greenbarsystems/Greenbar-Pay repository. If Greenbar ever changes the
+// GreenbarSystems/Greenbar-Pay repository. If Greenbar ever changes the
 // canonicalisation, they MUST bump manifest.schemaVersion so old
 // verifiers refuse to verify new packets rather than silently
 // mis-hashing them.

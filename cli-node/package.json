@@ -1,7 +1,7 @@
 {
   "name": "@greenbarsystems/gbverify",
-  "version": "0.1.0",
-  "description": "Verify the integrity of a Greenbar Pay evidence packet (SHA-256 canonical-JSON).",
+  "version": "0.2.0",
+  "description": "Verify the integrity of a Greenbar AP Assurance evidence packet (SHA-256 canonical-JSON).",
   "license": "MIT",
   "bin": {
     "gbverify": "./bin/gbverify.js"
@@ -10,7 +10,7 @@
   "engines": { "node": ">=18" },
   "repository": {
     "type": "git",
-    "url": "https://github.com/greenbarsystems/gbverify.git"
+    "url": "https://github.com/GreenbarSystems/gbverify.git"
   },
   "keywords": ["greenbar", "audit", "sha256", "evidence", "ap-automation"]
 }
