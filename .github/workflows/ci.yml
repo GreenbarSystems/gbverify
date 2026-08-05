@@ -3,7 +3,7 @@ name: CI
 # Runs the cross-language test suite on every push and PR. This is how the
 # repo demonstrates that the Node and Python CLIs continue to produce
 # byte-identical hashes over time. If this job goes red, the OSS
-# canonicalisation contract has moved and the paired Greenbar-Pay CI job
+# canonicalization contract has moved and the paired Greenbar-Pay CI job
 # (evidence-hash-drift) will also fail, blocking any release of gbverify
 # that doesn't come with a matching Greenbar-Pay schemaVersion bump.
 

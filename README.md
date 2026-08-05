@@ -60,7 +60,7 @@ These are review questions. The packet is the evidence you use to ask them, not 
 
 ## How the hash is computed
 
-The manifest hash is a SHA-256 over the manifest JSON, serialised with recursively sorted object keys and no incidental whitespace (canonical JSON). This is the same algorithm implemented at [`src/lib/evidence/assemble.ts`](https://github.com/GreenbarSystems/Greenbar-Pay/blob/main/src/lib/evidence/assemble.ts) in the Greenbar AP Assurance repository.
+The manifest hash is a SHA-256 over the manifest JSON, serialized with recursively sorted object keys and no incidental whitespace (canonical JSON). This is the same algorithm implemented at [`src/lib/evidence/assemble.ts`](https://github.com/GreenbarSystems/Greenbar-Pay/blob/main/src/lib/evidence/assemble.ts) in the Greenbar AP Assurance repository.
 
 You do not need this tool to verify — a five-line Python script or a short shell pipeline will produce the same hash:
 
@@ -89,4 +89,4 @@ Currently supported: `evidence.v2`.
 
 ## License
 
-MIT. Contributions welcome. Report canonicalisation bugs at [github.com/GreenbarSystems/gbverify/issues](https://github.com/GreenbarSystems/gbverify).
+MIT. Contributions welcome. Report canonicalization bugs at [github.com/GreenbarSystems/gbverify/issues](https://github.com/GreenbarSystems/gbverify).

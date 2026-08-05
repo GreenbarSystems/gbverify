@@ -21,7 +21,7 @@ const { createHash } = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const VERSION = "0.2.1";
+const VERSION = "0.3.0";
 const SUPPORTED_SCHEMAS = new Set(["evidence.v2"]);
 
 function usage() {
@@ -48,9 +48,23 @@ function usage() {
 // This function MUST stay byte-for-byte identical to
 // src/lib/evidence/assemble.ts#canonicalJsonStringify in the
 // GreenbarSystems/Greenbar-Pay repository. If Greenbar ever changes the
-// canonicalisation, they MUST bump manifest.schemaVersion so old
+// canonicalization, they MUST bump manifest.schemaVersion so old
 // verifiers refuse to verify new packets rather than silently
 // mis-hashing them.
+//
+// Rules:
+//   - object keys sorted (recursively)
+//   - array element order preserved
+//   - default JSON.stringify separators ("," and ":", no spaces)
+//   - non-ASCII emitted raw (JS default; matches Python's ensure_ascii=False)
+//   - negative zero (-0) normalized to positive zero (0). JS's
+//     JSON.stringify(-0) emits "-0" while Python's json.dumps(-0.0) emits
+//     "-0.0" — the two are unequal strings and would produce different
+//     SHA-256 hashes for otherwise-identical manifests. This is the
+//     only known place default JSON.stringify and Python's json.dumps
+//     disagree on inputs the assembler could plausibly produce (via
+//     e.g. -round2(x) where x rounds to 0). We normalize on both sides
+//     to keep the contract robust.
 // ---------------------------------------------------------------------------
 function canonicalJsonStringify(value) {
   return JSON.stringify(value, (_key, v) => {
@@ -59,6 +73,9 @@ function canonicalJsonStringify(value) {
       for (const k of Object.keys(v).sort()) sorted[k] = v[k];
       return sorted;
     }
+    // Normalize -0 to 0 so Node and Python agree byte-for-byte.
+    // Object.is(-0, 0) === false, so we can detect it precisely.
+    if (typeof v === "number" && v === 0 && Object.is(v, -0)) return 0;
     return v;
   });
 }

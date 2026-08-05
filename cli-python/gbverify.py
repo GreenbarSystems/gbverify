@@ -21,11 +21,12 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import sys
 from typing import Any, Optional
 
-VERSION = "0.2.1"
+VERSION = "0.3.0"
 SUPPORTED_SCHEMAS = {"evidence.v2"}
 
 
@@ -45,13 +46,33 @@ SUPPORTED_SCHEMAS = {"evidence.v2"}
 #     Python's json.dumps(ensure_ascii=False) matches this.
 #   - JS numbers do not distinguish int/float, but here every
 #     numeric field in the manifest that could be sensitive is
-#     already serialised as a string (see extractedInvoice.subtotal
+#     already serialized as a string (see extractedInvoice.subtotal
 #     etc. in assemble.ts). Integers like riskScore and page counts
 #     come out the same either way.
+#   - Negative zero (-0.0) is normalized to 0. json.dumps(-0.0)
+#     emits "-0.0" while JS JSON.stringify(-0) emits "-0" — the two
+#     strings would produce different SHA-256 hashes for otherwise-
+#     identical manifests. Both CLIs and the source-of-truth
+#     assembler normalize -0 -> 0 before serialization.
 # ---------------------------------------------------------------------------
+def _normalize(value: Any) -> Any:
+    """Return a copy of value with any -0.0 replaced by 0.
+
+    We check with math.copysign because ``-0.0 == 0.0`` is True in
+    Python, so a naive equality test wouldn't distinguish the two.
+    """
+    if isinstance(value, float) and value == 0.0 and math.copysign(1.0, value) < 0:
+        return 0
+    if isinstance(value, dict):
+        return {k: _normalize(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_normalize(v) for v in value]
+    return value
+
+
 def canonical_json(value: Any) -> str:
     return json.dumps(
-        value,
+        _normalize(value),
         sort_keys=True,
         ensure_ascii=False,
         separators=(",", ":"),
