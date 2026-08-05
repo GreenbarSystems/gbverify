@@ -106,7 +106,7 @@ That's it. GitHub Actions picks up the tag push and:
 
 ## Rolling back a bad release
 
-If a release ships with a bug that changes the canonicalisation
+If a release ships with a bug that changes the canonicalization
 contract by mistake, **do not `npm unpublish` or PyPI-delete**. Both
 registries either forbid it (npm on packages >72h old with any
 downloads) or leave the version number permanently reserved (PyPI).
@@ -117,7 +117,7 @@ Instead:
 2. Mark the bad version deprecated:
    ```
    npm deprecate @greenbarsystems/gbverify@X.Y.Z \
-     "canonicalisation regression; upgrade to X.Y.(Z+1)"
+     "canonicalization regression; upgrade to X.Y.(Z+1)"
    ```
 3. Update Greenbar-Pay's `vendor/gbverify` submodule to point at
    the fixed tag.

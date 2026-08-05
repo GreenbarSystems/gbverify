@@ -500,7 +500,7 @@ def _verify_page(story, styles, packet):
     story.append(Paragraph("Option B — verify with your own tools",
                            styles["GBH2"]))
     story.append(Paragraph(
-        "The manifest hash is a SHA-256 of the manifest JSON, serialised "
+        "The manifest hash is a SHA-256 of the manifest JSON, serialized "
         "with recursively sorted object keys and no incidental whitespace "
         "(commonly called canonical JSON). Reference implementations:",
         styles["GBBody"]))
