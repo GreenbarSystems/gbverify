@@ -1,5 +1,5 @@
 {
-  "name": "@greenbarsystems/gbverify",
+  "name": "@greenbarsystemsllc/gbverify",
   "version": "0.3.0",
   "description": "Verify the integrity of a Greenbar AP Assurance evidence packet (SHA-256 canonical-JSON). Zero dependencies, MIT.",
   "license": "MIT",
@@ -13,12 +13,12 @@
   "engines": { "node": ">=18" },
   "repository": {
     "type": "git",
-    "url": "https://github.com/GreenbarSystems/gbverify.git",
+    "url": "git+https://github.com/GreenbarSystems/gbverify.git",
     "directory": "cli-node"
   },
   "keywords": ["greenbar", "audit", "sha256", "evidence", "ap-automation", "verify", "cryptographic-hash"],
   "scripts": {
-    "prepack": "cp ../README.md ../LICENSE ."
+    "prepack": "node -e \"require('fs').copyFileSync('../README.md','README.md'); require('fs').copyFileSync('../LICENSE','LICENSE')\""
   },
   "publishConfig": {
     "access": "public",
