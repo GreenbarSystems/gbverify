@@ -1,16 +1,27 @@
 {
   "name": "@greenbarsystems/gbverify",
-  "version": "0.2.0",
-  "description": "Verify the integrity of a Greenbar AP Assurance evidence packet (SHA-256 canonical-JSON).",
+  "version": "0.2.1",
+  "description": "Verify the integrity of a Greenbar AP Assurance evidence packet (SHA-256 canonical-JSON). Zero dependencies, MIT.",
   "license": "MIT",
+  "author": "GreenBar Systems",
+  "homepage": "https://github.com/GreenbarSystems/gbverify#readme",
+  "bugs": "https://github.com/GreenbarSystems/gbverify/issues",
   "bin": {
     "gbverify": "./bin/gbverify.js"
   },
-  "files": ["bin", "src", "README.md", "LICENSE"],
+  "files": ["bin", "README.md", "LICENSE"],
   "engines": { "node": ">=18" },
   "repository": {
     "type": "git",
-    "url": "https://github.com/GreenbarSystems/gbverify.git"
+    "url": "https://github.com/GreenbarSystems/gbverify.git",
+    "directory": "cli-node"
   },
-  "keywords": ["greenbar", "audit", "sha256", "evidence", "ap-automation"]
+  "keywords": ["greenbar", "audit", "sha256", "evidence", "ap-automation", "verify", "cryptographic-hash"],
+  "scripts": {
+    "prepack": "cp ../README.md ../LICENSE ."
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

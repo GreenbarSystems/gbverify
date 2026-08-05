@@ -1,0 +1,57 @@
+# PyPI packaging for gbverify.
+#
+# Build system: pep517 + setuptools (no wheel dep on any third-party
+# packaging tool; keeps the "audit this before running" story clean).
+#
+# The CLI is a single-file module (gbverify.py) exposed as the `gbverify`
+# console script via a src-less layout. There is no `src/` prefix and no
+# nested package on purpose — an auditor doing `pip download gbverify` and
+# then extracting the wheel should see one file, not a hierarchy.
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gbverify"
+version = "0.2.1"
+description = "Verify the integrity of a Greenbar AP Assurance evidence packet (SHA-256 canonical-JSON). Zero dependencies, MIT."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+authors = [{ name = "GreenBar Systems" }]
+keywords = ["greenbar", "audit", "sha256", "evidence", "ap-automation", "verify"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Accounting",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Utilities",
+]
+# Zero runtime dependencies. This is a feature, not a limitation.
+
+[project.urls]
+Homepage = "https://github.com/GreenbarSystems/gbverify"
+Repository = "https://github.com/GreenbarSystems/gbverify"
+Issues = "https://github.com/GreenbarSystems/gbverify/issues"
+
+[project.scripts]
+gbverify = "gbverify:main"
+
+# Only ship the module and its LICENSE + README.
+[tool.setuptools]
+py-modules = ["gbverify"]
+
+[tool.setuptools.package-data]
+"*" = ["LICENSE", "README.md"]

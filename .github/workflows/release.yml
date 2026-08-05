@@ -1,0 +1,141 @@
+name: Release
+
+# Triggers on annotated tags matching v*.*.* — publishes both packages
+# to npm and PyPI using OIDC trusted publishing (no long-lived secrets).
+#
+# Setup steps required ONCE per registry (see docs/RELEASING.md):
+#   1. On npmjs.com: create the @greenbarsystems org, then under
+#      Settings → Trusted publishing, add a rule pointing at:
+#         repository:          GreenbarSystems/gbverify
+#         workflow filename:   .github/workflows/release.yml
+#         environment name:    (leave blank)
+#   2. On pypi.org: create the gbverify project (initial upload can be
+#      done manually the first time, OR use pending trusted publisher),
+#      then under Manage → Publishing, add a rule pointing at:
+#         Owner:               GreenbarSystems
+#         Repository name:     gbverify
+#         Workflow name:       release.yml
+#         Environment name:    (leave blank)
+#
+# After both are configured, `git tag vX.Y.Z && git push origin vX.Y.Z`
+# is the entire release process. This workflow will:
+#   • run the full test suite for safety,
+#   • package the Node CLI with a provenance attestation,
+#   • build wheel + sdist for the Python CLI,
+#   • publish to both registries,
+#   • create a GitHub Release with the packet-hash of the sample as
+#     an in-release verification target.
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+jobs:
+  test:
+    # Never publish a version whose test suite doesn't pass.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: ./test.sh
+
+  publish-npm:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      # Required for npm provenance (attests that this specific tarball
+      # was built from this specific commit in this specific workflow —
+      # visible on npmjs.com next to the version).
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+      - name: Publish @greenbarsystems/gbverify
+        # `npm publish` inside cli-node/ runs the `prepack` script which
+        # copies README + LICENSE into the tarball. --provenance emits
+        # the OIDC-signed attestation.
+        working-directory: cli-node
+        run: npm publish --provenance --access public
+        env:
+          # Trusted publishing means no NPM_TOKEN is needed — the workflow's
+          # OIDC identity is what npm authenticates against. This line is
+          # kept commented as documentation of what the OLD flow looked
+          # like, for anyone reading the workflow later.
+          #
+          # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"
+
+  publish-pypi:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      # Required for PyPI trusted publishing OIDC exchange.
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Stage README + LICENSE for the sdist/wheel
+        run: cp README.md LICENSE cli-python/
+      - name: Build sdist and wheel
+        working-directory: cli-python
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+      - name: Publish to PyPI
+        # pypa's official action; supports trusted publishing out of the
+        # box when id-token: write is set in the job permissions.
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: cli-python/dist
+
+  create-github-release:
+    needs: [publish-npm, publish-pypi]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Compute sample-packet manifest hash for the release notes
+        id: hash
+        run: |
+          H=$(python3 -c "
+          import json, hashlib
+          p = json.load(open('sample/packet.json'))['gbEvidencePacket']
+          s = json.dumps(p['manifest'], sort_keys=True, ensure_ascii=False,
+                         separators=(',', ':'))
+          print(hashlib.sha256(s.encode('utf-8')).hexdigest())
+          ")
+          echo "manifest_hash=$H" >> "$GITHUB_OUTPUT"
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # Users can drop sample/packet.json into `gbverify` and confirm
+          # they get exactly this hash — a smoke-test of the whole install.
+          body: |
+            **Sample-packet manifest SHA-256:** `${{ steps.hash.outputs.manifest_hash }}`
+
+            Verify your install with:
+            ```
+            $ gbverify sample/packet.json
+            ✓  manifest hash valid
+               computed: ${{ steps.hash.outputs.manifest_hash }}
+               recorded: ${{ steps.hash.outputs.manifest_hash }}
+               schema:   evidence.v2
+            ```
+          files: |
+            sample/packet.json
+            sample/evidence-packet.pdf
+          fail_on_unmatched_files: true
+          generate_release_notes: true
