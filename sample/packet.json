@@ -1,0 +1,266 @@
+{
+  "gbEvidencePacket": {
+    "packetId": "5993189c-68cc-48e1-af99-0c9b718fb8cd",
+    "schemaVersion": "evidence.v2",
+    "sealedAt": "2026-07-16T15:08:53.000Z",
+    "sealedByUserId": "6e9c7b21-0f14-4a3f-8e2b-7d8c9a1b2c3d",
+    "organizationId": "org-example-firm",
+    "manifestHash": "d7096a4ba450756b3f251b34c83ddada35e5e22f2fe7c3c1a0f676e2686b08f2",
+    "sourceDocumentHash": "b3c9c1e0f4a5d6a7b8c9d0e1f2a3b4c5d6e7f8091a2b3c4d5e6f70819a2b3c4d",
+    "manifest": {
+      "schemaVersion": "evidence.v2",
+      "originalDocument": {
+        "documentId": "5e2b5a01-1c9c-4c1a-8f42-9c0f6c1a2b31",
+        "sourceChannel": "email",
+        "mimeType": "application/pdf",
+        "contentHash": "b3c9c1e0f4a5d6a7b8c9d0e1f2a3b4c5d6e7f8091a2b3c4d5e6f70819a2b3c4d",
+        "storageKey": "documents/2026/07/16/invoice-4472.pdf",
+        "receivedAt": "2026-07-16T14:22:08.114Z",
+        "pageCount": 2
+      },
+      "extractedInvoice": {
+        "extractedInvoiceId": "7a8f3d20-2e1a-4b0c-9d1e-5c2b8f0a1e33",
+        "documentType": "invoice",
+        "vendorName": "Acme Cabling Supply, LLC",
+        "vendorAddress": "1200 W Van Buren St, Phoenix, AZ 85007",
+        "remitToName": "Acme Cabling Supply, LLC",
+        "remitToAddress": "PO Box 74119, Chicago, IL 60675-4119",
+        "invoiceNumber": "INV-2026-4472",
+        "invoiceDate": "2026-07-14",
+        "dueDate": "2026-08-13",
+        "paymentTerms": "Net 30",
+        "purchaseOrderNumber": "PO-2026-0881",
+        "currency": "USD",
+        "subtotal": "18420.00",
+        "tax": "1473.60",
+        "shipping": "215.00",
+        "discount": "0.00",
+        "total": "20108.60",
+        "confidence": "0.987",
+        "warnings": [
+          {
+            "code": "remit_address_changed",
+            "severity": "warning"
+          }
+        ],
+        "reviewStatus": "approved",
+        "reviewedBy": "6e9c7b21-0f14-4a3f-8e2b-7d8c9a1b2c3d",
+        "reviewedAt": "2026-07-16T15:08:52.402Z"
+      },
+      "extractedLines": [
+        {
+          "lineId": "l1-9d5c",
+          "lineNumber": 1,
+          "description": "Cat6A UTP plenum cable, 1000ft box (blue)",
+          "quantity": "24.00",
+          "unitPrice": "428.00",
+          "amount": "10272.00",
+          "confidenceScore": "0.992",
+          "confidenceReason": "high-quality PDF; exact match to PO line",
+          "histSampleCount": 14,
+          "histAvgPrice": "412.50",
+          "histStddevPrice": "9.20",
+          "stddevDistance": "1.68",
+          "updatedAt": "2026-07-16T14:22:11.900Z"
+        },
+        {
+          "lineId": "l2-8a4b",
+          "lineNumber": 2,
+          "description": "RJ45 shielded connector, bulk (pack of 100)",
+          "quantity": "12.00",
+          "unitPrice": "68.00",
+          "amount": "816.00",
+          "confidenceScore": "0.981",
+          "confidenceReason": "high-quality PDF; new SKU vs vendor history",
+          "histSampleCount": 0,
+          "histAvgPrice": null,
+          "histStddevPrice": null,
+          "stddevDistance": null,
+          "updatedAt": "2026-07-16T14:22:11.902Z"
+        },
+        {
+          "lineId": "l3-7e2f",
+          "lineNumber": 3,
+          "description": "Patch panel, 48-port Cat6A, rack-mount",
+          "quantity": "4.00",
+          "unitPrice": "1833.00",
+          "amount": "7332.00",
+          "confidenceScore": "0.968",
+          "confidenceReason": "high-quality PDF; unit price 8.4% above baseline",
+          "histSampleCount": 9,
+          "histAvgPrice": "1691.11",
+          "histStddevPrice": "42.30",
+          "stddevDistance": "3.35",
+          "updatedAt": "2026-07-16T14:22:11.905Z"
+        }
+      ],
+      "validation": {
+        "validationResultId": "vr-4c1d-8e2f",
+        "passed": false,
+        "severity": "blocking",
+        "createdAt": "2026-07-16T14:22:14.221Z",
+        "findings": [
+          {
+            "code": "possible_duplicate_amount",
+            "severity": "blocking",
+            "message": "Vendor Acme Cabling Supply, LLC submitted an invoice with an identical total ($20,108.60) within the last 45 days (INV-2026-4318, approved 2026-06-19).",
+            "context": {
+              "matchInvoiceId": "prior-inv-4318",
+              "matchTotal": "20108.60",
+              "matchApprovedAt": "2026-06-19T16:31:00.000Z"
+            }
+          },
+          {
+            "code": "remit_to_drift",
+            "severity": "warning",
+            "message": "Remit-to bank/address changed vs. last approved invoice for this vendor (baseline reviewed 2026-06-19).",
+            "context": {
+              "baselineReviewedAt": "2026-06-19T16:31:00.000Z",
+              "fieldsChanged": [
+                "remitToAddress"
+              ]
+            }
+          },
+          {
+            "code": "line_rate_drift",
+            "severity": "warning",
+            "message": "Line 3 unit price ($1,833.00) exceeds vendor baseline by 8.4% (>2σ).",
+            "context": {
+              "lineNumber": 3,
+              "stddevDistance": "3.35"
+            }
+          }
+        ]
+      },
+      "briefingCard": {
+        "briefingCardId": "bc-2b8f-01a3",
+        "generatedAt": "2026-07-16T14:22:19.077Z",
+        "glCode": "6120-Network-Infrastructure",
+        "glRationale": "Cabling and rack-mount patch panels historically post to 6120 for this org; PO-2026-0881 was coded to the same GL.",
+        "anomalyFlags": [
+          "duplicate_total_recent",
+          "remit_address_changed",
+          "new_sku"
+        ],
+        "deltaSummary": "Total $20,108.60 vs prior invoice $20,108.60 (2026-06-19). Line 3 unit price 8.4% above vendor baseline.",
+        "riskScore": 48,
+        "riskScoreVersion": "1.1.0",
+        "riskJustification": "The identical total to a recent invoice and the remit-to address change both raise the score. Vendor is not warming up (14 prior invoices). Line-rate drift on line 3 is material but within the historical variance of construction-supply pricing. A reviewer should confirm this is not a resubmission before releasing.",
+        "riskFactors": {
+          "blockingFindingCount": 1,
+          "warningFindingCount": 2,
+          "vendorTermsDrift": false,
+          "vendorDuplicateCount": 1,
+          "textQualityLow": false,
+          "vendorWarmingUp": false,
+          "rateDriftCount": 1,
+          "hasNewLineItem": true
+        },
+        "coachingPrompts": [
+          {
+            "code": "duplicate_total_recent",
+            "severity": "high",
+            "message": "This total was already paid to this vendor on 2026-06-19. Confirm this is not a resubmission before approving.",
+            "dollarImpact": 20108.6
+          },
+          {
+            "code": "remit_address_changed",
+            "severity": "high",
+            "message": "The remit-to address is different from what this vendor used last time. Verify with an out-of-band channel before releasing payment.",
+            "dollarImpact": 20108.6
+          },
+          {
+            "code": "line_rate_drift",
+            "severity": "medium",
+            "message": "Line 3 is priced 8.4% above vendor baseline; a competing quote may be worth checking.",
+            "dollarImpact": 566.72
+          }
+        ]
+      },
+      "vendorProfileSnapshot": {
+        "vendorId": "v-acme-cabling",
+        "priorInvoiceCount": 14,
+        "priorInvoiceCount90d": 4,
+        "avgInvoiceTotal90d": "9871.24",
+        "daysSinceFirstInvoice": 412,
+        "warmingUp": false,
+        "termsBaseline": "Net 30",
+        "remitBaseline": {
+          "remitToName": "Acme Cabling Supply, LLC",
+          "remitToAddress": "PO Box 55011, Chicago, IL 60654-5011",
+          "establishedAt": "2025-05-30T00:00:00.000Z"
+        }
+      },
+      "llmRun": {
+        "llmRunId": "run-3e0d-a9c2",
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-6",
+        "promptName": "briefing_card",
+        "promptVersion": "3.2.0",
+        "inputHash": "9f0c1e4a7b2d3f5a1c6b8e9d0a1f2b3c4d5e6f708192a3b4c5d6e7f80912a3b4",
+        "inputTokensEstimate": 4820,
+        "status": "succeeded",
+        "durationMs": 3120
+      },
+      "approverActionLog": {
+        "auditEventId": "ae-9c1b-77aa",
+        "actorId": "6e9c7b21-0f14-4a3f-8e2b-7d8c9a1b2c3d",
+        "createdAt": "2026-07-16T15:08:52.402Z",
+        "beforeJson": {
+          "reviewStatus": "review",
+          "riskScore": 48
+        },
+        "metadata": {
+          "activeBriefingCardId": "bc-2b8f-01a3",
+          "activeValidationResultId": "vr-4c1d-8e2f",
+          "approverAttestationText": "I have reviewed the duplicate-total warning and the remit-to address change. I confirm via a phone call to the vendor's AP contact that the address change is genuine and this invoice covers a distinct shipment (PO-2026-0881, delivered 2026-07-10). Approving with override.",
+          "approverName": "Dana Ortiz",
+          "approverEmail": "dana@example-firm.com",
+          "auditSeq": "42017",
+          "overrideRequired": true
+        }
+      },
+      "override": {
+        "overrideId": "ov-6d2a-11bb",
+        "overridingUserId": "6e9c7b21-0f14-4a3f-8e2b-7d8c9a1b2c3d",
+        "secondApproverId": "1c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+        "justificationText": "Verified vendor address change by direct call to AP contact on 2026-07-16 at 14:57 MST; separate PO/shipment confirmed by warehouse.",
+        "overrideAmount": "20108.60",
+        "blockingFindingCodes": [
+          "possible_duplicate_amount"
+        ],
+        "approvedAt": "2026-07-16T15:08:52.402Z"
+      },
+      "poMatch": {
+        "poMatchResultId": "pm-4a01-e8f2",
+        "purchaseOrderId": "po-2026-0881",
+        "matchType": "three_way",
+        "status": "matched",
+        "invoiceTotal": "20108.60",
+        "poTotal": "20500.00",
+        "variancePct": "-1.91",
+        "lineVariancesJson": [
+          {
+            "lineNumber": 1,
+            "poUnitPrice": "428.00",
+            "invoiceUnitPrice": "428.00",
+            "pct": "0.00"
+          },
+          {
+            "lineNumber": 2,
+            "poUnitPrice": "68.00",
+            "invoiceUnitPrice": "68.00",
+            "pct": "0.00"
+          },
+          {
+            "lineNumber": 3,
+            "poUnitPrice": "1691.00",
+            "invoiceUnitPrice": "1833.00",
+            "pct": "8.40"
+          }
+        ],
+        "matchedAt": "2026-07-16T14:22:20.113Z"
+      }
+    }
+  }
+}

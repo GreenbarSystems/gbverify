@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# Node
+node_modules/
+npm-debug.log
+.npm/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
