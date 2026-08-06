@@ -9,15 +9,14 @@ If the hash matches, you have cryptographic evidence that the AI-assisted review
 ## Install
 
 ```
-npm install -g @greenbarsystems/gbverify   # Node ≥ 18
-pipx install gbverify                      # Python ≥ 3.8
-brew install gbverify                      # macOS, Linux
+npm install -g @greenbarsystemsllc/gbverify   # Node ≥ 18
+pipx install gbverify                         # Python ≥ 3.8
 ```
 
 Or run it once without installing:
 
 ```
-npx @greenbarsystems/gbverify packet.json
+npx @greenbarsystemsllc/gbverify packet.json
 ```
 
 ## Use
