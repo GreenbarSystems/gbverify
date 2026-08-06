@@ -44,6 +44,29 @@ $ gbverify --json packet.json
 {"manifest":{"ok":true,"computedManifestHash":"d709…","recordedManifestHash":"d709…", …}}
 ```
 
+## Try it
+
+`sample/packet.json` is a real (synthetic) evidence packet. `sample/tampered.json` is the same packet with `extractedInvoice.total` changed after sealing — everything else, including the recorded `manifestHash`, is untouched:
+
+```
+$ gbverify sample/packet.json
+✓  manifest hash valid
+   computed: d7096a4ba450756b3f251b34c83ddada35e5e22f2fe7c3c1a0f676e2686b08f2
+   recorded: d7096a4ba450756b3f251b34c83ddada35e5e22f2fe7c3c1a0f676e2686b08f2
+   schema:   evidence.v2
+
+$ gbverify sample/tampered.json
+✗  manifest hash INVALID
+   computed: 0468a89c02135b62561ba36bdf6cc31016783a278ceddc4b4aa0acc972cd1bdb
+   recorded: d7096a4ba450756b3f251b34c83ddada35e5e22f2fe7c3c1a0f676e2686b08f2
+   schema:   evidence.v2
+
+Problems:
+  - manifestHash mismatch
+```
+
+Exit code is `0` for the first, `1` for the second — the recorded hash never changes, only what it's checked against.
+
 ## What a passing verification proves
 
 - **The record is untampered.** The invoice, line items, AI briefing card, deterministic risk score inputs, validation findings, approver attestation, and any blocking-finding override were bit-for-bit identical to what Greenbar AP Assurance sealed at approval time.
