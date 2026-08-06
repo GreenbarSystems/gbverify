@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""gbverify — verify the integrity of a Greenbar AP Assurance evidence packet.
+"""gbverify — verify the integrity of a Greenbar evidence packet.
 
 MIT License. Standard library only (Python 3.8+).
 
@@ -26,7 +26,7 @@ import os
 import sys
 from typing import Any, Optional
 
-VERSION = "0.3.2"
+VERSION = "0.3.3"
 SUPPORTED_SCHEMAS = {"evidence.v2"}
 
 

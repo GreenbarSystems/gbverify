@@ -1,6 +1,6 @@
 {
   "name": "@greenbarsystemsllc/gbverify",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Verify the integrity of a Greenbar AP Assurance evidence packet (SHA-256 canonical-JSON). Zero dependencies, MIT.",
   "license": "MIT",
   "author": "GreenBar Systems",

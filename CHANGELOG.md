@@ -3,6 +3,35 @@
 All notable changes to gbverify are documented here. This project adheres
 to [Semantic Versioning](https://semver.org/).
 
+## [0.3.3] — 2026-08-06
+
+Documentation and CLI banner text only. No change to canonicalization,
+hashing, or verification behaviour — byte-identical output to 0.3.2 for
+every packet.
+
+### Changed
+
+- **Dropped "Greenbar AP Assurance" from the README, the Node CLI's
+  `--help` banner, and the Python CLI's module docstring (also its
+  `--help` output).** gbverify's actual check is
+  `schemaVersion === "evidence.v2"` — it was never coupled to one
+  product in code, only in its own wording. The banner text claimed a
+  dependency the tool doesn't have: any Greenbar product that seals an
+  `evidence.v2` packet is verifiable, not only the one the docs
+  happened to name.
+- README also now says plainly that `test.sh`'s cross-language check
+  (Node vs Python agreeing with each other) is not the same claim as
+  agreeing with a live copy of `assemble.ts` in Greenbar-Pay — the two
+  repos stay in sync by convention today, not by an automated
+  cross-repo test.
+
+### Notes
+
+- Version bumped in `cli-node/package.json`, `cli-python/pyproject.toml`,
+  `cli-node/bin/gbverify.js`, and `cli-python/gbverify.py` because
+  `--help`/`--version` output text changed, even though verification
+  logic did not.
+
 ## [0.3.2] — 2026-08-06
 
 Completes the release started by 0.3.1. No functional or canonicalization

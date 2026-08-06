@@ -1,10 +1,12 @@
 # gbverify
 
-**Verify the integrity of a Greenbar AP Assurance evidence packet in one command.**
+**Verify the integrity of a Greenbar evidence packet in one command.**
 
-`gbverify` is a small, dependency-free, MIT-licensed tool that recomputes the SHA-256 manifest hash printed on every Greenbar AP Assurance evidence-packet PDF and reports whether it matches the record. It runs entirely on your machine — no network call, no Greenbar account.
+`gbverify` is a small, dependency-free, MIT-licensed tool that recomputes the SHA-256 manifest hash printed on every Greenbar evidence-packet PDF and reports whether it matches the record. It runs entirely on your machine — no network call, no Greenbar account.
 
-If the hash matches, you have cryptographic evidence that the AI-assisted review record on the accompanying PDF is bit-for-bit identical to the record sealed at approval time in Greenbar AP Assurance's database. If it doesn't match, the packet was modified after sealing.
+If the hash matches, you have cryptographic evidence that the AI-assisted review record on the accompanying PDF is bit-for-bit identical to the record sealed at approval time in Greenbar's database. If it doesn't match, the packet was modified after sealing.
+
+`gbverify` isn't tied to one Greenbar product. It verifies any packet whose `schemaVersion` it recognizes (currently `evidence.v2` — see "Schema versioning" below), regardless of which Greenbar tool sealed it.
 
 ## Install
 
@@ -69,7 +71,7 @@ Exit code is `0` for the first, `1` for the second — the recorded hash never c
 
 ## What a passing verification proves
 
-- **The record is untampered.** The invoice, line items, AI briefing card, deterministic risk score inputs, validation findings, approver attestation, and any blocking-finding override were bit-for-bit identical to what Greenbar AP Assurance sealed at approval time.
+- **The record is untampered.** The invoice, line items, AI briefing card, deterministic risk score inputs, validation findings, approver attestation, and any blocking-finding override were bit-for-bit identical to what was sealed at approval time.
 - **The source PDF is the one the AI reviewed.** With `--document`, the SHA-256 of the file on disk matches the source-document hash recorded in the packet at ingest time.
 
 ## What it does not prove
@@ -82,7 +84,7 @@ These are review questions. The packet is the evidence you use to ask them, not 
 
 ## How the hash is computed
 
-The manifest hash is a SHA-256 over the manifest JSON, serialized with recursively sorted object keys and no incidental whitespace (canonical JSON). This is the same algorithm implemented at [`src/lib/evidence/assemble.ts`](https://github.com/GreenbarSystems/Greenbar-Pay/blob/main/src/lib/evidence/assemble.ts) in the Greenbar AP Assurance repository.
+The manifest hash is a SHA-256 over the manifest JSON, serialized with recursively sorted object keys and no incidental whitespace (canonical JSON). The current source-of-truth implementation of this algorithm lives at [`src/lib/evidence/assemble.ts`](https://github.com/GreenbarSystems/Greenbar-Pay/blob/main/src/lib/evidence/assemble.ts) in the Greenbar-Pay repository. `test.sh` checks that gbverify's own Node and Python implementations agree with each other on every change; it does not check them against a live copy of `assemble.ts`. Today, the two repos stay in sync by convention, not by an automated cross-repo test.
 
 You do not need this tool to verify — a five-line Python script or a short shell pipeline will produce the same hash:
 
