@@ -25,17 +25,29 @@ jobs:
           python-version: "3.11"
       - name: Run test suite (10 assertions, all cross-language)
         run: ./test.sh
+      - name: Install pypdf for the PDF-attachment check
+        # Pinned to the 5.x line. The attachment API used below
+        # (`reader.attachments[name][0]`) is major-version sensitive, so a
+        # 6.x release should be an explicit, tested bump rather than a
+        # silent break on some unrelated push.
+        run: python3 -m pip install "pypdf>=5,<6"
       - name: Verify sample PDF's embedded JSON verifies via both CLIs
         run: |
           # The sample PDF ships packet.json as an embedded attachment. An
           # auditor extracts it and hands it to gbverify. This step proves
           # that path still works end-to-end.
+          #
+          # Deliberately no soft-fail. This step previously ended in
+          # `|| { echo "::warning::pypdf not installed"; exit 0; }`, and
+          # since nothing ever installed pypdf, the fallback fired on every
+          # run and the two verification commands below never executed once.
+          # pypdf is now a declared dependency of the job, so any failure
+          # here is a real regression in the extract-then-verify path.
           python3 -c "
           from pypdf import PdfReader
-          import sys
           r = PdfReader('sample/evidence-packet.pdf')
           data = r.attachments['packet.json'][0]
           open('/tmp/from-pdf.json','wb').write(data)
-          " || { echo "::warning::pypdf not installed, skipping PDF-attachment check"; exit 0; }
+          "
           node cli-node/bin/gbverify.js /tmp/from-pdf.json
           python3 cli-python/gbverify.py /tmp/from-pdf.json
