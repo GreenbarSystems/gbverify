@@ -37,11 +37,11 @@ jobs:
     # Never publish a version whose test suite doesn't pass.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - run: ./test.sh
@@ -54,11 +54,21 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
-          registry-url: "https://registry.npmjs.org"
+          # No registry-url on purpose. Setting it makes setup-node write an
+          # .npmrc containing `_authToken=${NODE_AUTH_TOKEN}`; with no token
+          # supplied, npm authenticates with setup-node's literal placeholder
+          # and the registry rejects the write as E404. Trusted Publishing
+          # needs *no* token line in .npmrc at all.
+      - name: Upgrade npm for Trusted Publishing
+        # OIDC Trusted Publishing requires npm >= 11.5.1. Node 22 bundles
+        # npm 10.x, which has no OIDC support and silently falls back to
+        # token auth. Provenance signing works on npm 9.5+, so a signed
+        # provenance statement is NOT evidence that the auth path works.
+        run: npm install -g npm@latest
       - name: Publish @greenbarsystemsllc/gbverify
         # `npm publish` inside cli-node/ runs the `prepack` script which
         # copies README + LICENSE into the tarball. --provenance emits
@@ -76,8 +86,8 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - name: Stage README + LICENSE for the sdist/wheel
@@ -100,7 +110,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Compute sample-packet manifest hash for the release notes
         id: hash
         run: |
@@ -113,7 +123,7 @@ jobs:
           ")
           echo "manifest_hash=$H" >> "$GITHUB_OUTPUT"
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           # Users can drop sample/packet.json into `gbverify` and confirm
           # they get exactly this hash — a smoke-test of the whole install.

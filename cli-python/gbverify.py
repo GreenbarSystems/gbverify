@@ -26,7 +26,7 @@ import os
 import sys
 from typing import Any, Optional
 
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 SUPPORTED_SCHEMAS = {"evidence.v2"}
 
 

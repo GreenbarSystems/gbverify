@@ -21,7 +21,7 @@ const { createHash } = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const VERSION = "0.3.1";
+const VERSION = "0.3.2";
 const SUPPORTED_SCHEMAS = new Set(["evidence.v2"]);
 
 function usage() {

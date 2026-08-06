@@ -3,6 +3,39 @@
 All notable changes to gbverify are documented here. This project adheres
 to [Semantic Versioning](https://semver.org/).
 
+## [0.3.2] — 2026-08-06
+
+Completes the release started by 0.3.1. No functional or canonicalization
+changes — byte-identical verification behaviour to 0.3.0.
+
+### Fixed
+
+- **npm Trusted Publishing failed in `release.yml`.** Two causes, both in
+  the `publish-npm` job:
+  - `actions/setup-node` was given `registry-url`, which writes an
+    `.npmrc` containing `_authToken=${NODE_AUTH_TOKEN}`. With no token
+    supplied, npm authenticated using setup-node's literal placeholder
+    and the registry rejected the write. npm reports unauthorized writes
+    as `E404`, so the failure presented as a missing package.
+  - OIDC Trusted Publishing requires npm >= 11.5.1; Node 22 bundles
+    npm 10.x, which has no OIDC support. The job now upgrades npm before
+    publishing.
+
+  Note for future debugging: provenance signing succeeded during the
+  failed run. Provenance works on npm 9.5+ and is independent of the
+  Trusted Publishing auth path, so a signed provenance statement is not
+  evidence that publishing is correctly configured.
+
+### Notes
+
+- 0.3.1 published to PyPI but not to npm. The two registries are aligned
+  again from 0.3.2 onward. `v0.3.1` was left in place rather than
+  force-moved; the tag reflects what was actually released.
+- Action pins moved to current majors in both workflows: `checkout@v7`,
+  `setup-node@v7`, `setup-python@v7`, `action-gh-release@v3`. Clears the
+  Node 20 runtime deprecation warnings. `pypa/gh-action-pypi-publish`
+  stays on `release/v1`, which is that project's supported moving ref.
+
 ## [0.3.1] — 2026-08-05
 
 Release-pipeline verification. No functional or canonicalization changes —
