@@ -1,7 +1,7 @@
 # Releasing gbverify
 
 `gbverify` publishes to two registries on every `v*.*.*` tag: **npm**
-(`@greenbarsystems/gbverify`) and **PyPI** (`gbverify`). Both use
+(`@greenbarsystemsllc/gbverify`) and **PyPI** (`gbverify`). Both use
 **OIDC trusted publishing** — no long-lived tokens are stored as
 GitHub secrets. This document is the one-time setup and the ongoing
 release procedure.
@@ -33,7 +33,7 @@ Each release published this way carries:
 ### npm side
 
 1. Sign in to <https://www.npmjs.com> as an org owner.
-2. Create the org `@greenbarsystems` if it doesn't exist:
+2. Create the org `@greenbarsystemsllc` if it doesn't exist:
    <https://www.npmjs.com/org/create>.
    Choose the **free** tier — public packages only, which is what we
    want.
@@ -97,7 +97,7 @@ git push origin vX.Y.Z
 That's it. GitHub Actions picks up the tag push and:
 
 1. Runs `./test.sh` in a clean runner.
-2. Publishes `@greenbarsystems/gbverify@X.Y.Z` to npm with provenance.
+2. Publishes `@greenbarsystemsllc/gbverify@X.Y.Z` to npm with provenance.
 3. Publishes `gbverify==X.Y.Z` to PyPI with attestations.
 4. Creates a GitHub Release with the sample-packet's manifest hash
    in the notes and the sample packet + PDF as release assets.
@@ -116,7 +116,7 @@ Instead:
 1. Immediately publish `vX.Y.(Z+1)` reverting the offending commit.
 2. Mark the bad version deprecated:
    ```
-   npm deprecate @greenbarsystems/gbverify@X.Y.Z \
+   npm deprecate @greenbarsystemsllc/gbverify@X.Y.Z \
      "canonicalization regression; upgrade to X.Y.(Z+1)"
    ```
 3. Update Greenbar-Pay's `vendor/gbverify` submodule to point at
@@ -133,8 +133,8 @@ Any auditor can verify a published version wasn't tampered with:
 
 ```
 # npm side — verifies the provenance chain to a specific GitHub commit
-npm view @greenbarsystems/gbverify@X.Y.Z --json | jq '.dist'
-npm audit signatures @greenbarsystems/gbverify@X.Y.Z
+npm view @greenbarsystemsllc/gbverify@X.Y.Z --json | jq '.dist'
+npm audit signatures @greenbarsystemsllc/gbverify@X.Y.Z
 
 # PyPI side — download the wheel and check attestations
 pip download gbverify==X.Y.Z --no-deps
