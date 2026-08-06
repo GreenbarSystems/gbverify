@@ -8,7 +8,8 @@ The rendered PDF is the auditor-facing artifact. Design principles:
      can trace paper -> JSON. No summary prose that isn't in the JSON.
   3. The full canonical JSON is embedded as a PDF attachment so a
      single file contains everything gbverify needs.
-  4. Renders with `reportlab` (only PDF dep) so this is reproducible
+  4. Renders with `reportlab` for layout and `pypdf` for the embedded
+     attachment — the only two PDF deps — so this is reproducible
      inside Greenbar's existing Node/Python stack via a small
      Python service or via `pdfkit` in Node with the same layout.
 """
@@ -26,6 +27,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from pypdf import PdfReader, PdfWriter
 from reportlab.platypus import (
     BaseDocTemplate,
     Frame,
@@ -580,30 +582,25 @@ def render(packet_path: str, out_path: str) -> None:
     _llm_page(story, styles, packet)
     _verify_page(story, styles, packet)
 
-    # Embed the raw JSON manifest as a PDF attachment. This is what
-    # makes the PDF self-contained: an auditor extracts the JSON with
-    # any PDF viewer, feeds it to gbverify, and re-computes the hash.
-    def _attach(canvas_):
-        from reportlab.pdfbase.pdfdoc import PDFDictionary, PDFStream
-        pass  # attachment handled below via canvas.attach
-
-    def _on_finish(canv, d):
-        _header_footer(canv, d, packet)
-
     doc.build(story)
 
-    # Post-build: use pypdf to attach the JSON as an embedded file
-    try:
-        from pypdf import PdfReader, PdfWriter
-        reader = PdfReader(out_path)
-        writer = PdfWriter(clone_from=reader)
-        with open(packet_path, "rb") as f:
-            writer.add_attachment("packet.json", f.read())
-        with open(out_path, "wb") as f:
-            writer.write(f)
-        print(f"Embedded packet.json as PDF attachment")
-    except Exception as e:
-        print(f"(attachment skipped: {e})", file=sys.stderr)
+    # Post-build: embed the raw JSON manifest as a PDF attachment. This is
+    # what makes the PDF self-contained: an auditor extracts the JSON with
+    # any PDF viewer, feeds it to gbverify, and re-computes the hash.
+    #
+    # Deliberately not wrapped in try/except. This previously swallowed
+    # every failure and printed "(attachment skipped: ...)" to stderr while
+    # still exiting 0, so a missing pypdf produced a PDF that looks right,
+    # renders right, and is useless as an evidence packet — the
+    # extract-then-verify path is the entire reason the artifact exists.
+    # A packet we cannot attach the manifest to is not a packet.
+    reader = PdfReader(out_path)
+    writer = PdfWriter(clone_from=reader)
+    with open(packet_path, "rb") as f:
+        writer.add_attachment("packet.json", f.read())
+    with open(out_path, "wb") as f:
+        writer.write(f)
+    print("Embedded packet.json as PDF attachment")
 
     print(f"Wrote {out_path}")
 
