@@ -14,7 +14,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gbverify"
-version = "0.3.0"
+version = "0.3.1"
 description = "Verify the integrity of a Greenbar AP Assurance evidence packet (SHA-256 canonical-JSON). Zero dependencies, MIT."
 readme = "README.md"
 license = { text = "MIT" }

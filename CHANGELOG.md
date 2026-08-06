@@ -3,6 +3,23 @@
 All notable changes to gbverify are documented here. This project adheres
 to [Semantic Versioning](https://semver.org/).
 
+## [0.3.1] — 2026-08-05
+
+Release-pipeline verification. No functional or canonicalization changes —
+byte-identical verification behaviour to 0.3.0.
+
+### Notes
+
+- 0.3.0 reached npm via a manual bootstrap publish (`--provenance=false`,
+  because OIDC only works from CI) and was never tagged in git. 0.3.1 is
+  the first release cut by `release.yml` end-to-end, and therefore the
+  first with a provenance attestation.
+- First publish to PyPI; the `gbverify` project did not exist there before
+  this release, so 0.3.0 has no PyPI counterpart and the two registries
+  are aligned from 0.3.1 onward.
+- Version bumped in `cli-node/package.json`, `cli-python/pyproject.toml`,
+  `cli-node/bin/gbverify.js`, and `cli-python/gbverify.py`.
+
 ## [0.3.0] — 2026-08-05
 
 ### Fixed
