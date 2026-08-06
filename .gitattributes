@@ -1,0 +1,21 @@
+# Git's text-vs-binary heuristic misdetects PDFs: it samples the first 8k
+# for NUL bytes, and a PDF whose leading objects are ASCII looks like text.
+# On a Windows checkout (core.autocrlf=true) every LF then becomes CRLF,
+# which shifts every byte offset in the file. The xref table and the
+# startxref pointer are byte offsets, so the file silently decodes as
+# "incorrect startxref pointer" and only survives because readers fall
+# back to rebuilding the xref. Committing such a working copy back
+# normalizes CRLF to LF and stores a genuinely corrupt PDF.
+#
+# sample/evidence-packet.pdf is the artifact an auditor extracts
+# packet.json from, so it must round-trip byte-exactly on every platform.
+*.pdf binary
+
+# Evidence packets are checked out on Windows and hashed on Linux CI.
+# Canonicalization parses the JSON, so line endings do not change the
+# manifest hash, but pinning LF keeps the working copy identical to the
+# blob and stops packet.json showing as perpetually modified.
+*.json text eol=lf
+
+# test.sh runs on ubuntu-latest; CRLF would break the shebang.
+*.sh text eol=lf
