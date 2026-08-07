@@ -2,7 +2,7 @@
 
 Download the latest version of gbverify from GitHub Releases:
 
-**[Download gbverify.zip](https://github.com/GreenbarSystems/gbverify/releases/latest/download/gbverify.zip)**
+**[Download gbverify-v1.0.0.zip](https://github.com/GreenbarSystems/gbverify/releases/latest/download/gbverify.zip)**
 
 The download above points to the latest published release.
 
