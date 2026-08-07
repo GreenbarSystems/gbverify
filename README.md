@@ -1,3 +1,19 @@
+## Download
+
+Download the latest version of gbverify from GitHub Releases:
+
+**[Download gbverify.zip](https://github.com/GreenbarSystems/gbverify/releases/latest/download/gbverify.zip)**
+
+The download above points to the latest published release.
+
+### Current Release
+
+**v0.3.3**
+
+You can also view all releases here:
+
+https://github.com/GreenbarSystems/gbverify/releases
+
 # gbverify
 
 **Verify the integrity of a Greenbar evidence packet in one command.**
